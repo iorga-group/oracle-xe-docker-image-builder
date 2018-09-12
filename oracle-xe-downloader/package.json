@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "debug": "4.0.1",
+    "puppeteer": "1.7.0"
+  }
+}
