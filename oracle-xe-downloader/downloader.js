@@ -44,6 +44,7 @@ if (!otnPassword) {
   try {
     const waitUntilRealyLoadedOption = {waitUntil: ['load', 'domcontentloaded', 'networkidle0']};
 
+    console.log('Going to the Oracle XE database download website...');
     await page.goto('http://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html', waitUntilRealyLoadedOption);
 
     // Validate cookies
@@ -100,6 +101,7 @@ if (!otnPassword) {
     await client.send('Page.setDownloadBehavior', {behavior: 'allow', downloadPath: downloadFolder});
     // await page.setRequestInterception(true); // tried the interception without success: timeout is reached even if the file is downloaded
 
+    console.log('Downloading Oracle XE database (can take some minutes)...');
     // const downloadPromise = page.waitForNavigation(Object.assign({timeout: 600*1000}, waitUntilRealyLoadedOption)); // this doesn't work: even after the file is downloaded, it will wait until the timeout
     await page.click('input[type="button"]');
     // await downloadPromise;
@@ -109,7 +111,7 @@ if (!otnPassword) {
     await new Promise(resolve => {
       const fsWatcher = fs.watch(downloadFolder, (eventType, filename) => {
         if (filename.endsWith(fileToDownload)) {
-          console.log('File event: '+eventType+ ' on '+filename);
+          debug('File event: %O on %O', eventType, filename);
           resolve(filename);
           fsWatcher.close();
         }
@@ -161,9 +163,12 @@ if (!otnPassword) {
 
     // await page.screenshot({path: 'error.png'});
     // await page.pdf({path: 'error.pdf', displayHeaderFooter: true});
+    process.exit(4);
   }
 
   browser.close();
   debug('browser closed');
+
+  console.log('Oracle XE database sucessfully downloaded.');
 
 })();
