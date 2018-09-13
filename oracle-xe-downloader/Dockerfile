@@ -45,9 +45,17 @@ FROM alekzonder/puppeteer:1.7.0-0
 #
 #ENV CHROME_BIN /usr/bin/chromium-browser
 
-COPY --chown=pptruser:pptruser package.json /app/
-COPY --chown=pptruser:pptruser yarn.lock /app/
+COPY package.json /app/
+COPY yarn.lock /app/
+
+USER root
+RUN chown -R pptruser:pptruser /app/*
+USER pptruser
 
 RUN cd /app && yarn
 
-COPY --chown=pptruser:pptruser downloader.js /app/
+COPY downloader.js /app/
+
+USER root
+RUN chown -R pptruser:pptruser /app/downloader.js
+USER pptruser
